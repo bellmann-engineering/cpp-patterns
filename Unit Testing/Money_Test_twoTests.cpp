@@ -6,11 +6,15 @@
 
 BOOST_AUTO_TEST_CASE(simple_add)
 {
+	// Arrange
     Money m12chf(12, "CHF");
     Money m14chf(14, "CHF");
     Money expected (26, "CHF");
+
+	// act
     Money* observed = m12chf.add(m14chf);
-	
+
+	// assert
     BOOST_CHECK(expected == (*observed));
 }
 
