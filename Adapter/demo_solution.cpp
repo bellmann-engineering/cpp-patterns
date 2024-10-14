@@ -8,7 +8,7 @@ class ThermoInterface
         virtual ~ThermoInterface() {}; // important to avoid memory leak by ThermoAdapter
 };
 
-
+// Legacy component
 class CelciusThermo : public ThermoInterface
 {
     public:
@@ -19,7 +19,6 @@ class CelciusThermo : public ThermoInterface
     
 };
 
-// Legacy component
 class FahrenheitThermo
 {
     public:
