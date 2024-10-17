@@ -35,12 +35,6 @@ class WindowDecorator : public Window
         {
             
         }
-
-        virtual ~WindowDecorator() 
-        {
-            if (m_decoratedWindow != nullptr)
-                delete m_decoratedWindow;
-        }
 };
 
 class VerticalScrollBarDecorator : public WindowDecorator 
