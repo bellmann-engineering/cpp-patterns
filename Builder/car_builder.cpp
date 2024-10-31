@@ -54,6 +54,7 @@ class Car {
 // Builder is responsible for constructing the smaller parts
 class Builder {
  public:
+  virtual ~Builder() = default;
   virtual Wheel* buildWheel() = 0;
   virtual Engine* buildEngine() = 0;
   virtual Body* buildBody() = 0;
