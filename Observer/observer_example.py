@@ -127,10 +127,10 @@ class Customer(Observer):
 
 
 if __name__ == "__main__":
-    phoenix_feather_wand = Item("Phoenix Feather Wand", 50.0)
-    dragon_slayer_sword = Item("Dragon Slayer Sword", 100.0)
+    lenovo_notebook = Item("Lenovo Noteobok", 500.0)
+    hp_pc = Item("HP Computer", 400.0)
 
-    items = [phoenix_feather_wand, dragon_slayer_sword]
+    items = [lenovo_notebook, hp_pc]
 
     alice = Customer(
         "Alice",
@@ -154,9 +154,9 @@ if __name__ == "__main__":
         notify_by_sms=True,
     )
 
-    phoenix_feather_wand.register(alice)
-    phoenix_feather_wand.register(bob)
-    dragon_slayer_sword.register(charlie)
+    lenovo_notebook.register(alice)
+    lenovo_notebook.register(bob)
+    hp_pc.register(charlie)
 
     while True:
         print("Updating stock status...")
