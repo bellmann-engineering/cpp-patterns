@@ -59,10 +59,10 @@ def check_items_stock(items, customers):
 
 
 if __name__ == "__main__":
-    phoenix_feather_wand = Item("Phoenix Feather Wand", 50.0)
-    dragon_slayer_sword = Item("Dragon Slayer Sword", 100.0)
+    lenovo_notebook = Item("Lenovo Notebook", 500.0)
+    hp_computer = Item("HP Computer", 400.0)
 
-    all_items = [phoenix_feather_wand, dragon_slayer_sword]
+    all_items = [lenovo_notebook, hp_computer]
 
     alice = Customer(
         "Alice",
@@ -88,8 +88,8 @@ if __name__ == "__main__":
 
     all_customers = [alice, bob, charlie]
 
-    alice.items_of_interest = [phoenix_feather_wand]
-    bob.items_of_interest = [phoenix_feather_wand]
-    charlie.items_of_interest = [dragon_slayer_sword]
+    alice.items_of_interest = [lenovo_notebook]
+    bob.items_of_interest = [lenovo_notebook]
+    charlie.items_of_interest = [hp_computer]
 
     check_items_stock(all_items, all_customers)
