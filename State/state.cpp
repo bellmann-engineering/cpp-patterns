@@ -1,42 +1,30 @@
 #include <iostream>
-#include <memory>
-#include <string>
 #include <unordered_map>
 
+// Events for state transitions
 enum class Event {
     OnOffPressed,
     PlayPausePressed
 };
 
-class MusicPlayer;
-
 // Abstract State class
 class State {
 public:
     virtual ~State() = default;
+
     virtual void entry() = 0;
     virtual void exit() = 0;
-    virtual void handle(Event event, MusicPlayer& player) = 0;
+    virtual void handle(Event event, class MusicPlayer& player) = 0;
 };
 
-// Forward declarations of concrete states
-class Inactive;
-class On;
-class Playing;
-class Paused;
-
-// Context class
+// Context class (MusicPlayer)
 class MusicPlayer {
 public:
-    MusicPlayer() : state(std::make_unique<Inactive>(*this)), led_on(false) {
-        state->entry();
-    }
+    MusicPlayer();
 
-    void setState(std::unique_ptr<State> new_state) {
-        state->exit();
-        state = std::move(new_state);
-        state->entry();
-    }
+    ~MusicPlayer();
+
+    void setState(State* new_state);
 
     void turnLedOn() {
         led_on = true;
@@ -56,19 +44,17 @@ public:
         std::cout << "🔇 Music paused\n";
     }
 
-    void handle(Event event) {
-        state->handle(event, *this);
-    }
+    void handle(Event event);
 
 private:
-    std::unique_ptr<State> state;
+    State* state;  // Raw pointer to the current state
     bool led_on;
 };
 
 // Concrete State: Inactive
 class Inactive : public State {
 public:
-    explicit Inactive(MusicPlayer& player) : player(player) {}
+    Inactive(MusicPlayer& player) : player(player) {}
 
     void entry() override {
         std::cout << "Entering 'inactive' state\n";
@@ -79,12 +65,7 @@ public:
         std::cout << "Exiting 'inactive' state\n";
     }
 
-    void handle(Event event, MusicPlayer& player) override {
-        if (event == Event::OnOffPressed) {
-            std::cout << "OnOffPressed event in 'inactive' state\n";
-            player.setState(std::make_unique<On>(player));
-        }
-    }
+    void handle(Event event, MusicPlayer& player) override;
 
 private:
     MusicPlayer& player;
@@ -93,7 +74,7 @@ private:
 // Concrete State: On
 class On : public State {
 public:
-    explicit On(MusicPlayer& player) : player(player) {}
+    On(MusicPlayer& player) : player(player) {}
 
     void entry() override {
         std::cout << "Entering 'on' state\n";
@@ -104,13 +85,7 @@ public:
         std::cout << "Exiting 'on' state\n";
     }
 
-    void handle(Event event, MusicPlayer& player) override {
-        if (event == Event::PlayPausePressed) {
-            player.setState(std::make_unique<Playing>(player));
-        } else if (event == Event::OnOffPressed) {
-            player.setState(std::make_unique<Inactive>(player));
-        }
-    }
+    void handle(Event event, MusicPlayer& player) override;
 
 private:
     MusicPlayer& player;
@@ -119,7 +94,7 @@ private:
 // Concrete State: Playing
 class Playing : public State {
 public:
-    explicit Playing(MusicPlayer& player) : player(player) {}
+    Playing(MusicPlayer& player) : player(player) {}
 
     void entry() override {
         std::cout << "Entering 'playing' state\n";
@@ -130,11 +105,7 @@ public:
         std::cout << "Exiting 'playing' state\n";
     }
 
-    void handle(Event event, MusicPlayer& player) override {
-        if (event == Event::PlayPausePressed) {
-            player.setState(std::make_unique<Paused>(player));
-        }
-    }
+    void handle(Event event, MusicPlayer& player) override;
 
 private:
     MusicPlayer& player;
@@ -143,7 +114,7 @@ private:
 // Concrete State: Paused
 class Paused : public State {
 public:
-    explicit Paused(MusicPlayer& player) : player(player) {}
+    Paused(MusicPlayer& player) : player(player) {}
 
     void entry() override {
         std::cout << "Entering 'paused' state\n";
@@ -154,17 +125,63 @@ public:
         std::cout << "Exiting 'paused' state\n";
     }
 
-    void handle(Event event, MusicPlayer& player) override {
-        if (event == Event::PlayPausePressed) {
-            player.setState(std::make_unique<Playing>(player));
-        } else if (event == Event::OnOffPressed) {
-            player.setState(std::make_unique<Inactive>(player));
-        }
-    }
+    void handle(Event event, MusicPlayer& player) override;
 
 private:
     MusicPlayer& player;
 };
+
+// Implementation of State methods
+
+void Inactive::handle(Event event, MusicPlayer& player) {
+    if (event == Event::OnOffPressed) {
+        std::cout << "OnOffPressed event in 'inactive' state\n";
+        player.setState(new On(player));
+    }
+}
+
+void On::handle(Event event, MusicPlayer& player) {
+    if (event == Event::PlayPausePressed) {
+        player.setState(new Playing(player));
+    } else if (event == Event::OnOffPressed) {
+        player.setState(new Inactive(player));
+    }
+}
+
+void Playing::handle(Event event, MusicPlayer& player) {
+    if (event == Event::PlayPausePressed) {
+        player.setState(new Paused(player));
+    }
+}
+
+void Paused::handle(Event event, MusicPlayer& player) {
+    if (event == Event::PlayPausePressed) {
+        player.setState(new Playing(player));
+    } else if (event == Event::OnOffPressed) {
+        player.setState(new Inactive(player));
+    }
+}
+
+// MusicPlayer Implementation
+
+MusicPlayer::MusicPlayer() : state(new Inactive(*this)), led_on(false) {
+    state->entry();
+}
+
+MusicPlayer::~MusicPlayer() {
+    delete state;
+}
+
+void MusicPlayer::setState(State* new_state) {
+    state->exit();
+    delete state;
+    state = new_state;
+    state->entry();
+}
+
+void MusicPlayer::handle(Event event) {
+    state->handle(event, *this);
+}
 
 // Main function
 int main() {
