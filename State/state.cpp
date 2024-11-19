@@ -47,7 +47,7 @@ public:
     void handle(Event event);
 
 private:
-    State* state;  // Raw pointer to the current state
+    State* state; 
     bool led_on;
 };
 
