@@ -1,6 +1,6 @@
 # Content
 
-Hands-On Software Architecture Patterns with C++ by K. Bellmann and Prof. B. Brügge
+Hands-On Software Architecture Patterns with C++ by Dr. K. Bellmann and Prof. B. Brügge
 
 Each folder contains sample code for the following design patterns:
 - Abstract Factory
