@@ -96,10 +96,10 @@ int main()
 	Window* simple = new SimpleWindow();
 	std::cout << simple->getDescription() << std::endl;
 
-	Window* horiz = new HorizontalScrollBarDecorator(new SimpleWindow());
+	Window* horiz = new HorizontalScrollBarDecorator(simple);
 	std::cout << horiz->getDescription() << std::endl;
 
-	Window* vert = new VerticalScrollBarDecorator(new SimpleWindow());
+	Window* vert = new VerticalScrollBarDecorator(horiz);
 	std::cout << vert->getDescription() << std::endl;
 
 	Window* decoratedWindow = new HorizontalScrollBarDecorator(
